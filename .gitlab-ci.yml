@@ -1,0 +1,18 @@
+stages:
+  - build
+
+build_javac:
+  image: openjdk:15-ea-jdk-alpine
+  stage: build
+  script:
+    - apk update
+    - apk add apache-ant
+    - cd make/langtools
+    - ant build
+    - ../../build/langtools/bin/javac --version
+  tags:
+    - docker
+  artifacts:
+    paths:
+      - build/langtools/bin/javac
+

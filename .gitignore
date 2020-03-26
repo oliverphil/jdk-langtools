@@ -13,3 +13,7 @@ test/nashorn/lib
 NashornProfile.txt
 **/JTreport/**
 **/JTwork/**
+*.iml
+**/*.iml
+**/.idea/
+**/*.tmp
