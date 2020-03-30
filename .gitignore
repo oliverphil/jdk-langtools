@@ -17,3 +17,7 @@ NashornProfile.txt
 **/*.iml
 **/.idea/
 **/*.tmp
+.project
+.classpath
+.eclipse
+**/out/
