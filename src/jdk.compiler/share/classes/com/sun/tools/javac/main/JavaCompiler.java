@@ -1356,6 +1356,11 @@ public class JavaCompiler {
             compileStates.put(env, CompileState.ATTR);
         }
         finally {
+            if (errorCount() > 0) {
+                System.out.println("Attribution: Failed");
+            } else {
+                System.out.println("Attribution: Success");
+            }
             log.useSource(prev);
         }
 
