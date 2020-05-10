@@ -474,6 +474,7 @@ public class Flow {
         @Override
         void markDead() {
             alive = Liveness.DEAD;
+            System.out.println("Liveness: Failed");
         }
 
     /*************************************************************************
