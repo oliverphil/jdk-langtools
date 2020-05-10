@@ -230,7 +230,6 @@ public class Main {
             ex.printStackTrace(log.getWriter(WriterKind.NOTICE));
             return Result.SYSERR;
         }
-        System.out.println("Parsed");
 
         Arguments args = Arguments.instance(context);
         args.init(ownName, argv);
