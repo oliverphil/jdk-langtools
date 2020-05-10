@@ -214,6 +214,7 @@ public class Flow {
 
     public void analyzeTree(Env<AttrContext> env, TreeMaker make) {
         new AliveAnalyzer().analyzeTree(env, make);
+        System.out.println("Aliveness: Complete");
         new AssignAnalyzer().analyzeTree(env, make);
         new FlowAnalyzer().analyzeTree(env, make);
         new CaptureAnalyzer().analyzeTree(env, make);
@@ -2791,6 +2792,8 @@ public class Flow {
             } finally {
                 if (log.nerrors > prevErrors) {
                     System.out.println("Definite Assignment: Failed");
+                } else {
+                    System.out.println("Definite Assignment: Complete");
                 }
                 // note that recursive invocations of this method fail hard
                 startPos = -1;

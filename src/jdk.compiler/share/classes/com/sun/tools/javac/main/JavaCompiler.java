@@ -971,6 +971,8 @@ public class JavaCompiler {
             case BY_TODO:
                 if (todo.isEmpty()) {
                     System.out.println("Parsing: Failed");
+                } else {
+                    System.out.println("Parsing: Complete");
                 }
                 while (!todo.isEmpty())
                     generate(desugar(flow(attribute(todo.remove()))));
