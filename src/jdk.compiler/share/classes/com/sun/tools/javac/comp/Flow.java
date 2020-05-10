@@ -1730,6 +1730,7 @@ public class Flow {
         }
 
         public AssignAnalyzer() {
+            this.prevErrors = log.nerrors;
             this.inits = new Bits();
             uninits = new Bits();
             uninitsTry = new Bits();
@@ -1738,6 +1739,13 @@ public class Flow {
             uninitsWhenTrue = new Bits(true);
             uninitsWhenFalse = new Bits(true);
         }
+
+        /**
+         * Keep track of previous errors.
+         * Use to check if there have been any errors in this
+         * compilation stage.
+         */
+        private int prevErrors;
 
         private boolean isInitialConstructor = false;
 
@@ -2781,6 +2789,9 @@ public class Flow {
                 unrefdResources = WriteableScope.create(env.enclClass.sym);
                 scan(tree);
             } finally {
+                if (log.nerrors > prevErrors) {
+                    System.out.println("Definite Assignment: Failed");
+                }
                 // note that recursive invocations of this method fail hard
                 startPos = -1;
                 resetBits(inits, uninits, uninitsTry, initsWhenTrue,
