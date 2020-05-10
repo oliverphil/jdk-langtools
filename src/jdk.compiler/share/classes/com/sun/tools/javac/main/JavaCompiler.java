@@ -1361,7 +1361,7 @@ public class JavaCompiler {
             if (errorCount() > 0) {
                 System.out.println("Attribution: Failed");
             } else {
-                System.out.println("Attribution: Success");
+                System.out.println("Attribution: Complete");
             }
             log.useSource(prev);
         }
