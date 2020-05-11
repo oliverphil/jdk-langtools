@@ -214,6 +214,7 @@ public class Flow {
 
     public void analyzeTree(Env<AttrContext> env, TreeMaker make) {
         new AliveAnalyzer().analyzeTree(env, make);
+        System.out.println("Aliveness: Complete");
         new AssignAnalyzer().analyzeTree(env, make);
         new FlowAnalyzer().analyzeTree(env, make);
         new CaptureAnalyzer().analyzeTree(env, make);
@@ -474,6 +475,7 @@ public class Flow {
         @Override
         void markDead() {
             alive = Liveness.DEAD;
+            System.out.println("Liveness: Failed");
         }
 
     /*************************************************************************
@@ -1453,6 +1455,7 @@ public class Flow {
             analyzeTree(env, env.tree, make);
         }
         public void analyzeTree(Env<AttrContext> env, JCTree tree, TreeMaker make) {
+            int prevErrors = log.nerrors;
             try {
                 attrEnv = env;
                 Flow.this.make = make;
@@ -1462,6 +1465,11 @@ public class Flow {
                 this.classDef = null;
                 scan(tree);
             } finally {
+                if (prevErrors < log.nerrors) {
+                    System.out.println("Exception Flow: Failed");
+                } else {
+                    System.out.println("Exception Flow: Complete");
+                }
                 pendingExits = null;
                 Flow.this.make = null;
                 this.thrown = this.caught = null;
@@ -1729,6 +1737,7 @@ public class Flow {
         }
 
         public AssignAnalyzer() {
+            this.prevErrors = log.nerrors;
             this.inits = new Bits();
             uninits = new Bits();
             uninitsTry = new Bits();
@@ -1737,6 +1746,13 @@ public class Flow {
             uninitsWhenTrue = new Bits(true);
             uninitsWhenFalse = new Bits(true);
         }
+
+        /**
+         * Keep track of previous errors.
+         * Use to check if there have been any errors in this
+         * compilation stage.
+         */
+        private int prevErrors;
 
         private boolean isInitialConstructor = false;
 
@@ -2780,6 +2796,11 @@ public class Flow {
                 unrefdResources = WriteableScope.create(env.enclClass.sym);
                 scan(tree);
             } finally {
+                if (log.nerrors > prevErrors) {
+                    System.out.println("Definite Assignment: Failed");
+                } else {
+                    System.out.println("Definite Assignment: Complete");
+                }
                 // note that recursive invocations of this method fail hard
                 startPos = -1;
                 resetBits(inits, uninits, uninitsTry, initsWhenTrue,
@@ -2962,12 +2983,18 @@ public class Flow {
             analyzeTree(env, env.tree, make);
         }
         public void analyzeTree(Env<AttrContext> env, JCTree tree, TreeMaker make) {
+            int prevErrors = log.nerrors;
             try {
                 attrEnv = env;
                 Flow.this.make = make;
                 pendingExits = new ListBuffer<>();
                 scan(tree);
             } finally {
+                if (prevErrors < log.nerrors) {
+                    System.out.println("Capture: Failed");
+                } else {
+                    System.out.println("Capture: Complete");
+                }
                 pendingExits = null;
                 Flow.this.make = null;
             }

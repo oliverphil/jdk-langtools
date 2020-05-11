@@ -945,6 +945,7 @@ public class JavaCompiler {
                     implicitSourcePolicy == ImplicitSourcePolicy.NONE) {
                 todo.retainFiles(inputFiles);
             }
+            System.out.println(compilePolicy);
 
             switch (compilePolicy) {
             case ATTR_ONLY:
@@ -968,6 +969,11 @@ public class JavaCompiler {
                 break;
 
             case BY_TODO:
+                if (todo.isEmpty()) {
+                    System.out.println("Parsing: Failed");
+                } else {
+                    System.out.println("Parsing: Complete");
+                }
                 while (!todo.isEmpty())
                     generate(desugar(flow(attribute(todo.remove()))));
                 break;
@@ -1352,6 +1358,11 @@ public class JavaCompiler {
             compileStates.put(env, CompileState.ATTR);
         }
         finally {
+            if (errorCount() > 0) {
+                System.out.println("Attribution: Failed");
+            } else {
+                System.out.println("Attribution: Complete");
+            }
             log.useSource(prev);
         }
 
