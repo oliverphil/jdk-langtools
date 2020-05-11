@@ -1,4 +1,5 @@
-/build/
+/build/*
+!/build/*.java
 /dist/
 /.idea/
 nbproject/private/
