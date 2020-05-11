@@ -1,5 +1,6 @@
 /build/*
 !/build/*.java
+!/build/*.jar
 /dist/
 /.idea/
 nbproject/private/

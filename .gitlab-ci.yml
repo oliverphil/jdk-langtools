@@ -26,5 +26,7 @@ test_print_flags:
     - docker
   script:
     - cd build
+    - langtools/bin/javac -version
+    - langtools/bin/javac HelloWorld.java
     - javac -cp junit-platform-console-standalone-1.7.0-M1.jar JavacFlagTests.java
     - java -jar junit-platform-console-standalone-1.7.0-M1.jar --class-path . --scan-class-path

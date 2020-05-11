@@ -37,6 +37,7 @@ public class JavacFlagTests {
 
             assertEquals(expectedOutput, console);
         } catch (Exception e) {
+            e.printStackTrace();
             fail(e.getMessage());
         }
     }
