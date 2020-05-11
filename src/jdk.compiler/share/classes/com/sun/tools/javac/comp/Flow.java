@@ -205,6 +205,9 @@ public class Flow {
     private       Lint lint;
     private final boolean allowEffectivelyFinalInInnerClasses;
 
+
+    private boolean livenessFailed = false;
+
     public static Flow instance(Context context) {
         Flow instance = context.get(flowKey);
         if (instance == null)
@@ -214,7 +217,9 @@ public class Flow {
 
     public void analyzeTree(Env<AttrContext> env, TreeMaker make) {
         new AliveAnalyzer().analyzeTree(env, make);
-        System.out.println("Aliveness: Complete");
+        if (!livenessFailed) {
+            System.out.println("Flag - Liveness: Complete");
+        }
         new AssignAnalyzer().analyzeTree(env, make);
         new FlowAnalyzer().analyzeTree(env, make);
         new CaptureAnalyzer().analyzeTree(env, make);
@@ -470,12 +475,15 @@ public class Flow {
         /** A flag that indicates whether the last statement could
          *  complete normally.
          */
-        private Liveness alive;
+        protected Liveness alive;
 
         @Override
         void markDead() {
             alive = Liveness.DEAD;
-            System.out.println("Liveness: Failed");
+            if (!livenessFailed) {
+                System.out.println("Flag - Liveness: Failed");
+                livenessFailed = true;
+            }
         }
 
     /*************************************************************************
@@ -1466,9 +1474,9 @@ public class Flow {
                 scan(tree);
             } finally {
                 if (prevErrors < log.nerrors) {
-                    System.out.println("Exception Flow: Failed");
+                    System.out.println("Flag - Exception Flow: Failed");
                 } else {
-                    System.out.println("Exception Flow: Complete");
+                    System.out.println("Flag - Exception Flow: Complete");
                 }
                 pendingExits = null;
                 Flow.this.make = null;
@@ -1484,6 +1492,11 @@ public class Flow {
     class LambdaAliveAnalyzer extends AliveAnalyzer {
 
         boolean inLambda;
+
+        @Override
+        void markDead() {
+            alive = Liveness.DEAD;
+        }
 
         @Override
         public void visitReturn(JCReturn tree) {
@@ -1515,6 +1528,11 @@ public class Flow {
      */
     class SnippetAliveAnalyzer extends AliveAnalyzer {
         @Override
+        void markDead() {
+            alive = Liveness.DEAD;
+        }
+
+        @Override
         public void visitClassDef(JCClassDecl tree) {
             //skip
         }
@@ -1528,6 +1546,11 @@ public class Flow {
         private boolean breaksOut;
 
         public SnippetBreakAnalyzer() {
+        }
+
+        @Override
+        void markDead() {
+            alive = Liveness.DEAD;
         }
 
         @Override
@@ -2797,9 +2820,9 @@ public class Flow {
                 scan(tree);
             } finally {
                 if (log.nerrors > prevErrors) {
-                    System.out.println("Definite Assignment: Failed");
+                    System.out.println("Flag - Definite Assignment: Failed");
                 } else {
-                    System.out.println("Definite Assignment: Complete");
+                    System.out.println("Flag - Definite Assignment: Complete");
                 }
                 // note that recursive invocations of this method fail hard
                 startPos = -1;
@@ -2991,9 +3014,9 @@ public class Flow {
                 scan(tree);
             } finally {
                 if (prevErrors < log.nerrors) {
-                    System.out.println("Capture: Failed");
+                    System.out.println("Flag - Capture: Failed");
                 } else {
-                    System.out.println("Capture: Complete");
+                    System.out.println("Flag - Capture: Complete");
                 }
                 pendingExits = null;
                 Flow.this.make = null;
