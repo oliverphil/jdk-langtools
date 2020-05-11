@@ -2983,12 +2983,18 @@ public class Flow {
             analyzeTree(env, env.tree, make);
         }
         public void analyzeTree(Env<AttrContext> env, JCTree tree, TreeMaker make) {
+            int prevErrors = log.nerrors;
             try {
                 attrEnv = env;
                 Flow.this.make = make;
                 pendingExits = new ListBuffer<>();
                 scan(tree);
             } finally {
+                if (prevErrors < log.nerrors) {
+                    System.out.println("Capture: Failed");
+                } else {
+                    System.out.println("Capture: Complete");
+                }
                 pendingExits = null;
                 Flow.this.make = null;
             }
