@@ -2,6 +2,8 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -10,7 +12,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class JavacFlagTests {
 
     private String runCompilation(String program, boolean pass) throws Exception {
-        Process process = Runtime.getRuntime().exec("langtools/bin/javac " + program);
+        ProcessBuilder builder = new ProcessBuilder("langtools/bin/javac", program);
+        builder.redirectErrorStream(true);
+//        builder.redirectError(System.out);
+
+        Process process = builder.start();
         process.waitFor();
         if (pass) {
             assertEquals(0, process.exitValue());
@@ -19,7 +25,7 @@ public class JavacFlagTests {
         }
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String console = reader.lines().filter(s -> s.contains("Flag - ")).reduce("", (a, b) -> a + "\n" + b).substring(1);
+        String console = reader.lines()/*.filter(s -> s.contains("Flag - "))*/.reduce("", (a, b) -> a + "\n" + b).substring(1);
         return console;
     }
 
