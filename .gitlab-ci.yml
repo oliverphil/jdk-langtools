@@ -15,7 +15,7 @@ build_javac:
     - docker
   artifacts:
     paths:
-      - build/langtools/bin/javac
+      - build
 
 test_print_flags:
   image: openjdk:15-ea-jdk-alpine
