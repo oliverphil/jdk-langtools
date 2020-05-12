@@ -970,9 +970,9 @@ public class JavaCompiler {
 
             case BY_TODO:
                 if (todo.isEmpty()) {
-                    System.out.println("Parsing: Failed");
+                    System.out.println("Flag - Parsing: Failed");
                 } else {
-                    System.out.println("Parsing: Complete");
+                    System.out.println("Flag - Parsing: Complete");
                 }
                 while (!todo.isEmpty())
                     generate(desugar(flow(attribute(todo.remove()))));
@@ -1359,9 +1359,9 @@ public class JavaCompiler {
         }
         finally {
             if (errorCount() > 0) {
-                System.out.println("Attribution: Failed");
+                System.out.println("Flag - Attribution: Failed");
             } else {
-                System.out.println("Attribution: Complete");
+                System.out.println("Flag - Attribution: Complete");
             }
             log.useSource(prev);
         }

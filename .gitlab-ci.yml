@@ -1,5 +1,6 @@
 stages:
   - build
+  - test
 
 build_javac:
   image: openjdk:15-ea-jdk-alpine
@@ -14,5 +15,16 @@ build_javac:
     - docker
   artifacts:
     paths:
-      - build/langtools/bin/javac
+      - build
 
+test_print_flags:
+  image: openjdk:15-ea-jdk-alpine
+  dependencies:
+    - build_javac
+  stage: test
+  tags:
+    - docker
+  script:
+    - cd build
+    - javac -cp junit-platform-console-standalone-1.7.0-M1.jar JavacFlagTests.java
+    - java -jar junit-platform-console-standalone-1.7.0-M1.jar --class-path . --scan-class-path

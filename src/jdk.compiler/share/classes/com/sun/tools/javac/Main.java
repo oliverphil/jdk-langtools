@@ -40,7 +40,9 @@ public class Main {
      *  @param args command line arguments
      */
     public static void main(String[] args) throws Exception {
-        System.exit(compile(args));
+        int result = compile(args);
+        System.out.flush();
+        System.exit(result);
     }
 
     /** Programmatic interface to the Java Programming Language
