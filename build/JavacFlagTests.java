@@ -17,11 +17,6 @@ public class JavacFlagTests {
 
     private String runCompilation(String program, boolean pass) throws Exception {
         ProcessBuilder builder = new ProcessBuilder("langtools/bin/javac", program);
-        builder.redirectErrorStream(true);
-
-        File output = new File("output.txt");
-        ProcessBuilder.Redirect re = ProcessBuilder.Redirect.to(output);
-        builder.redirectOutput(re);
 
         Process process = builder.start();
         process.waitFor();
@@ -31,7 +26,9 @@ public class JavacFlagTests {
         } else {
             assertNotEquals(0, process.exitValue());
         }
-        String console = Files.lines(output.toPath()).filter(s -> s.contains("Flag - ")).reduce("", (a, b) -> a + "\n" + b).substring(1);
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String console = reader.lines().filter(s -> s.contains("Flag - ")).reduce("", (a, b) -> a + "\n" + b).substring(1);
         return console;
     }
 
@@ -163,13 +160,5 @@ public class JavacFlagTests {
         } catch (Exception e) {
             fail(e.getMessage());
         }
-    }
-
-    @AfterAll
-    public static void removeFiles () {
-        try {
-            File f = new File("output.txt");
-            Files.deleteIfExists(f.toPath());
-        } catch (Exception e) {}
     }
 }
