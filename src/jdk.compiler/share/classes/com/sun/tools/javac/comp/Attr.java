@@ -262,6 +262,11 @@ public class Attr extends JCTree.Visitor {
         if (resultInfo.checkMode.updateTreeType()) {
             tree.type = owntype;
         }
+        if (owntype instanceof ErrorType) {
+            System.out.println("Flag - Type Checking: Failed");
+        } else {
+            System.out.println("Flag - Type Checking: Complete");
+        }
         return owntype;
     }
 
