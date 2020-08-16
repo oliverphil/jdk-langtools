@@ -217,9 +217,6 @@ public class Flow {
 
     public void analyzeTree(Env<AttrContext> env, TreeMaker make) {
         new AliveAnalyzer().analyzeTree(env, make);
-        if (!livenessFailed) {
-            System.out.println("Flag - Liveness: Complete");
-        }
         new AssignAnalyzer().analyzeTree(env, make);
         new FlowAnalyzer().analyzeTree(env, make);
         new CaptureAnalyzer().analyzeTree(env, make);
@@ -480,10 +477,6 @@ public class Flow {
         @Override
         void markDead() {
             alive = Liveness.DEAD;
-            if (!livenessFailed) {
-                System.out.println("Flag - Liveness: Failed");
-                livenessFailed = true;
-            }
         }
 
     /*************************************************************************
